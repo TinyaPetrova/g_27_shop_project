@@ -1,4 +1,4 @@
-package de.aittr.g_27_shop_project.domain;
+package de.aittr.g_27_shop_project.domain.interfaces;
 
 public interface Product {
 

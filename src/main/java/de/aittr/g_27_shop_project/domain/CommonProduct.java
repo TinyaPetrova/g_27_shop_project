@@ -1,5 +1,6 @@
 package de.aittr.g_27_shop_project.domain;
 
+import de.aittr.g_27_shop_project.domain.interfaces.Product;
 import java.util.Objects;
 
 public class CommonProduct implements Product {
@@ -8,6 +9,10 @@ public class CommonProduct implements Product {
   private boolean isActive;
   private String name;
   private double price;
+
+  public CommonProduct() {
+    this.isActive = true;
+  }
 
   public CommonProduct(String name, double price) {
     this.name = name;
@@ -53,4 +58,10 @@ public class CommonProduct implements Product {
   public int hashCode() {
     return Objects.hash(id, isActive, name, price);
   }
+
+  @Override
+  public String toString() {
+    return String.format("Product: id - %d, name - %s, price - %.2f, active - %s.", id, name, price, isActive ? "yes" : "no");
+  }
+
 }
