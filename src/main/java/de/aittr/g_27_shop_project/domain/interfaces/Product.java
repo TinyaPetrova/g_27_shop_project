@@ -10,4 +10,5 @@ public interface Product {
 
   double getPrice();
 
+  void setId (int id);
 }
