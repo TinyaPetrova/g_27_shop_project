@@ -1,5 +1,6 @@
 package de.aittr.g_27_shop_project.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.aittr.g_27_shop_project.domain.interfaces.Cart;
 import de.aittr.g_27_shop_project.domain.interfaces.Product;
 import java.util.ArrayList;
@@ -11,6 +12,10 @@ public class CommonCart implements Cart {
   private List<Product> products = new ArrayList<>();
 
   public CommonCart() {
+  }
+
+  public CommonCart(int id) {
+    this.id = id;
   }
 
   @Override
@@ -47,6 +52,7 @@ public class CommonCart implements Cart {
   }
 
   @Override
+  @JsonIgnore // аннотация, чтобы исключить работу метода из вывода пользователю
   public double getAveragePrice() {
     return products.stream()
         .filter(x -> x.isActive())

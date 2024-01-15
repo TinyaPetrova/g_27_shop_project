@@ -3,6 +3,8 @@ package de.aittr.g_27_shop_project.services;
 import de.aittr.g_27_shop_project.domain.interfaces.Product;
 import de.aittr.g_27_shop_project.repositories.interfaces.ProductRepository;
 import de.aittr.g_27_shop_project.services.interfaces.ProductService;
+import java.util.List;
+import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,5 +32,55 @@ public class CommonProductService implements ProductService {
     }
 
     return repository.save(product);
+  }
+
+  @Override
+  public List<Product> getAllActiveProducts() {
+    List<Product> products = repository.getAll();
+
+    if (products.isEmpty()) {
+      throw new NoSuchElementException("Database doesn't contain any products");
+    }
+    return products;
+  }
+
+  @Override
+  public Product getActiveProductsById(int id) {
+    return null;
+  }
+
+  @Override
+  public void update(Product product) {
+
+  }
+
+  @Override
+  public void deleteById(int id) {
+
+  }
+
+  @Override
+  public void deleteByName(String name) {
+
+  }
+
+  @Override
+  public void restoreById(int id) {
+
+  }
+
+  @Override
+  public int getActiveProductsCount() {
+    return 0;
+  }
+
+  @Override
+  public double getActiveProductsTotalPrice() {
+    return 0;
+  }
+
+  @Override
+  public double getActiveProductsAveragePrice() {
+    return 0;
   }
 }

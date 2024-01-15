@@ -7,7 +7,7 @@ public class DBConnector {
 
   // jdbc:mysql://localhost:3306/animals?user=root&password=77777
 
-  private static final String DB_DRIVER_PATH = "com.mysql.cj.jbc.Driver";
+  private static final String DB_DRIVER_PATH = "com.mysql.cj.jdbc.Driver";
   private static final String DB_ADDRESS = "jdbc:mysql://localhost:3306/";
   private static final String DB_NAME = "27_shop";
   private static final String DB_USERNAME = "root";
