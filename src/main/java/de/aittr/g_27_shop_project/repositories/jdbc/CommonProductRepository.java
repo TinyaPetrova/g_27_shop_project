@@ -1,13 +1,12 @@
-package de.aittr.g_27_shop_project.repositories;
+package de.aittr.g_27_shop_project.repositories.jdbc;
 
-import static de.aittr.g_27_shop_project.repositories.DBConnector.getConnection;
+import static de.aittr.g_27_shop_project.repositories.jdbc.DBConnector.getConnection;
 
-import de.aittr.g_27_shop_project.domain.CommonProduct;
+import de.aittr.g_27_shop_project.domain.jdbc.CommonProduct;
 import de.aittr.g_27_shop_project.domain.interfaces.Product;
 import de.aittr.g_27_shop_project.repositories.interfaces.ProductRepository;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;

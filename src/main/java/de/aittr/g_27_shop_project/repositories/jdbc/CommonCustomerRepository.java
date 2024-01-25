@@ -1,10 +1,10 @@
-package de.aittr.g_27_shop_project.repositories;
+package de.aittr.g_27_shop_project.repositories.jdbc;
 
-import static de.aittr.g_27_shop_project.repositories.DBConnector.getConnection;
+import static de.aittr.g_27_shop_project.repositories.jdbc.DBConnector.getConnection;
 
-import de.aittr.g_27_shop_project.domain.CommonCart;
-import de.aittr.g_27_shop_project.domain.CommonCustomer;
-import de.aittr.g_27_shop_project.domain.CommonProduct;
+import de.aittr.g_27_shop_project.domain.jdbc.CommonCart;
+import de.aittr.g_27_shop_project.domain.jdbc.CommonCustomer;
+import de.aittr.g_27_shop_project.domain.jdbc.CommonProduct;
 import de.aittr.g_27_shop_project.domain.interfaces.Cart;
 import de.aittr.g_27_shop_project.domain.interfaces.Customer;
 import de.aittr.g_27_shop_project.domain.interfaces.Product;
