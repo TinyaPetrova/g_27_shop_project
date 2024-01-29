@@ -8,6 +8,7 @@ import de.aittr.g_27_shop_project.services.interfaces.ProductService;
 import de.aittr.g_27_shop_project.services.mapping.ProductMappingService;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -55,14 +56,16 @@ public class JpaProductService implements ProductService {
     repository.save(entity);
   }
 
+  // дз: метод удаления по айди
   @Override
   public void deleteById(int id) {
-
+    repository.deleteById(id);
   }
 
+  // дз: метод удаления по имени, обозначила его в репозитории
   @Override
   public void deleteByName(String name) {
-
+    repository.deleteByName(name);
   }
 
   @Override
@@ -78,16 +81,38 @@ public class JpaProductService implements ProductService {
 
   @Override
   public int getActiveProductsCount() {
-    return 0;
+    List<JpaProduct> activeProducts = repository.findByIsActiveTrue();
+    return activeProducts.size();
   }
 
+  // дз: найти стоимость всеч активных продуктов, метод обозначен в репозитории
+  @Transactional
   @Override
   public double getActiveProductsTotalPrice() {
-    return 0;
+    List<ProductDto> activeProductDtos = repository.findByIsActiveTrue().stream()
+        .filter(x -> x.isActive())
+        .map(mappingService::mapEntityToDto)
+        .collect(Collectors.toList());
+
+    double totalPrice = activeProductDtos.stream()
+        .mapToDouble(x -> x.getPrice())
+        .sum();
+
+    return totalPrice;
   }
 
+  // дз: найти среднюю стоимость всеч активных продуктов, метод обозначен в репозитории
+  @Transactional
   @Override
   public double getActiveProductsAveragePrice() {
-    return 0;
+    List<ProductDto> activeProductDtos = repository.findByIsActiveTrue().stream()
+        .filter(x -> x.isActive())
+        .map(mappingService::mapEntityToDto)
+        .collect(Collectors.toList());
+
+    double totalPrices = activeProductDtos.stream()
+        .mapToDouble(x -> x.getPrice())
+        .sum();
+    return totalPrices / activeProductDtos.size();
   }
 }
