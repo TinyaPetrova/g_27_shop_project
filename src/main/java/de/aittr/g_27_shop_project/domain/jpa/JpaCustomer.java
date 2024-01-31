@@ -10,6 +10,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 import java.util.Objects;
 
 @Entity
@@ -22,7 +26,18 @@ public class JpaCustomer implements Customer {
   private int id;
 
   @Column(name = "name")
+  @Pattern(regexp = "^[А-ЯЁA-Z][а-яёa-z]{1,29}$", message = "Name should start with the capital letter and contain 2-30 symbols")
+  // также можно вводить имя на латинице или кириллице по желанию
   private String name;
+
+  @Column(name = "email")
+  @Email(message = "Incorrect format of email")
+  private String email;
+
+  @Column(name = "age")
+  @Min(value = 18, message = "Age should be at least 18 y.o.")
+  @Max(value = 120, message = "Max age should be no bigger than 120 y.o.")
+  private int age;
 
   @Column(name = "is_active")
   private boolean isActive;
