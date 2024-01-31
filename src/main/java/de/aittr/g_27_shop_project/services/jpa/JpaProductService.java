@@ -4,6 +4,12 @@ import de.aittr.g_27_shop_project.domain.dto.ProductDto;
 import de.aittr.g_27_shop_project.domain.interfaces.Product;
 import de.aittr.g_27_shop_project.domain.jpa.JpaProduct;
 import de.aittr.g_27_shop_project.exception_handling.exceptions.FourthTestException;
+import de.aittr.g_27_shop_project.exception_handling.exceptions.ProductCalculationException;
+import de.aittr.g_27_shop_project.exception_handling.exceptions.ProductDeletingException;
+import de.aittr.g_27_shop_project.exception_handling.exceptions.ProductGettingException;
+import de.aittr.g_27_shop_project.exception_handling.exceptions.ProductNotFoundException;
+import de.aittr.g_27_shop_project.exception_handling.exceptions.ProductSavingException;
+import de.aittr.g_27_shop_project.exception_handling.exceptions.ProductUpdatingException;
 import de.aittr.g_27_shop_project.exception_handling.exceptions.SecondTestExceptions;
 import de.aittr.g_27_shop_project.exception_handling.exceptions.ThirdTestException;
 import de.aittr.g_27_shop_project.repositories.jpa.JpaProductRepository;
@@ -25,6 +31,7 @@ public class JpaProductService implements ProductService {
     this.mappingService = mappingService;
   }
 
+  // дз: обработчик исключений ProductSavingException
   @Override
   public ProductDto save(ProductDto product) {
     try {
@@ -33,46 +40,71 @@ public class JpaProductService implements ProductService {
       entity = repository.save(entity);
       return mappingService.mapEntityToDto(entity);
     } catch (Exception e) {
-      throw new FourthTestException(e.getMessage());
+      throw new ProductSavingException("Failed to save the product" + e.getMessage());
     }
   }
 
+  // дз: обработчик исключений ProductGettingException
   @Override
   public List<ProductDto> getAllActiveProducts() {
-    return repository.findAll()
-        .stream()
-        .filter(x -> x.isActive())
-        .map(x -> mappingService.mapEntityToDto(x))
-        .toList();
+    try {
+      return repository.findAll()
+          .stream()
+          .filter(x -> x.isActive())
+          .map(x -> mappingService.mapEntityToDto(x))
+          .toList();
+    } catch (Exception e) {
+      throw new ProductGettingException("Failed to get the active products" + e.getMessage());
+    }
   }
 
+  // дз: обработчик исключений ProductNotFoundException + ProductNotFoundException
   @Override
   public ProductDto getActiveProductsById(int id) {
-    JpaProduct product = repository.findById(id).orElse(null);
+    try {
+      JpaProduct product = repository.findById(id).orElse(null);
 
-    if (product != null && product.isActive()) {
-      return mappingService.mapEntityToDto(product);
+      if (product != null && product.isActive()) {
+        return mappingService.mapEntityToDto(product);
+      } else {
+        throw new ProductNotFoundException("Product with ID " + id + " is not active or doesn't exist");
+      }
+    } catch (Exception e) {
+      throw new ProductNotFoundException("Failed to find product with ID " + id + ": " + e.getMessage());
     }
-
-    throw new ThirdTestException("Product with this ID is absent in DB");
   }
 
+  // дз: обработчк исключений ProductUpdatingException
   @Override
   public void update(ProductDto product) {
-    JpaProduct entity = mappingService.mapDtoToEntity(product);
-    repository.save(entity);
+    try {
+      JpaProduct entity = mappingService.mapDtoToEntity(product);
+      repository.save(entity);
+    } catch (Exception e) {
+      throw new ProductUpdatingException("Failed to update product: " + e.getMessage());
+    }
   }
 
-  // дз: метод удаления по айди
+  // дз: обработчик исключений ProductDeletingException
+  // старое дз: метод удаления по айди
   @Override
   public void deleteById(int id) {
-    repository.deleteById(id);
+    try {
+      repository.deleteById(id);
+    } catch (Exception e) {
+      throw new ProductDeletingException("Failed to delete product with ID " + id + ": " + e.getMessage());
+    }
   }
 
-  // дз: метод удаления по имени, обозначила его в репозитории
+  // дз: обработчик исключений ProductDeletingException
+  // старое дз: метод удаления по имени, обозначила его в репозитории
   @Override
   public void deleteByName(String name) {
-    repository.deleteByName(name);
+    try {
+      repository.deleteByName(name);
+    } catch (Exception e) {
+      throw new ProductDeletingException("Failed to delete product with name " + name + ": " + e.getMessage());
+    }
   }
 
   @Override
@@ -86,40 +118,52 @@ public class JpaProductService implements ProductService {
     // тут транзакция прерывается, поэтому нужна аннотация
   }
 
+  // дз: обработчик исключений ProductCalculationException
   @Override
   public int getActiveProductsCount() {
-    List<JpaProduct> activeProducts = repository.findByIsActiveTrue();
-    return activeProducts.size();
+    try {
+      List<JpaProduct> activeProducts = repository.findByIsActiveTrue();
+      return activeProducts.size();
+    } catch (Exception e) {
+      throw new ProductCalculationException("Failed to calculate the count of active products: " + e.getMessage());
+    }
   }
 
-  // дз: найти стоимость всеч активных продуктов, метод обозначен в репозитории
+  // дз: обработчик исключений ProductCalculationException
+  // старое дз: найти стоимость всеч активных продуктов, метод обозначен в репозитории
   @Transactional
   @Override
   public double getActiveProductsTotalPrice() {
-    List<ProductDto> activeProductDtos = repository.findByIsActiveTrue().stream()
-        .filter(x -> x.isActive())
-        .map(mappingService::mapEntityToDto)
-        .collect(Collectors.toList());
+    try {
+      List<JpaProduct> activeProducts = repository.findByIsActiveTrue();
 
-    double totalPrice = activeProductDtos.stream()
-        .mapToDouble(x -> x.getPrice())
-        .sum();
+      double totalPrice = activeProducts.stream()
+          .mapToDouble(JpaProduct::getPrice)
+          .sum();
 
-    return totalPrice;
+      return totalPrice;
+    } catch (Exception e) {
+      throw new ProductCalculationException(
+          "Failed to calculate total price of active products: " + e.getMessage());
+    }
   }
 
-  // дз: найти среднюю стоимость всеч активных продуктов, метод обозначен в репозитории
+  // дз: обработчик исключений ProductCalculationException
+  // старое дз: найти среднюю стоимость всеч активных продуктов, метод обозначен в репозитории
   @Transactional
   @Override
   public double getActiveProductsAveragePrice() {
-    List<ProductDto> activeProductDtos = repository.findByIsActiveTrue().stream()
-        .filter(x -> x.isActive())
-        .map(mappingService::mapEntityToDto)
-        .collect(Collectors.toList());
+    try {
+      List<JpaProduct> activeProducts = repository.findByIsActiveTrue();
 
-    double totalPrices = activeProductDtos.stream()
-        .mapToDouble(x -> x.getPrice())
-        .sum();
-    return totalPrices / activeProductDtos.size();
+      double totalPrices = activeProducts.stream()
+          .mapToDouble(JpaProduct::getPrice)
+          .sum();
+
+      return totalPrices / activeProducts.size();
+    } catch (Exception e) {
+      throw new ProductCalculationException(
+          "Failed to calculate average price of active products: " + e.getMessage());
+    }
   }
 }
