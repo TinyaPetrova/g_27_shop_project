@@ -3,6 +3,9 @@ package de.aittr.g_27_shop_project.services.jpa;
 import de.aittr.g_27_shop_project.domain.dto.ProductDto;
 import de.aittr.g_27_shop_project.domain.interfaces.Product;
 import de.aittr.g_27_shop_project.domain.jpa.JpaProduct;
+import de.aittr.g_27_shop_project.exception_handling.exceptions.FourthTestException;
+import de.aittr.g_27_shop_project.exception_handling.exceptions.SecondTestExceptions;
+import de.aittr.g_27_shop_project.exception_handling.exceptions.ThirdTestException;
 import de.aittr.g_27_shop_project.repositories.jpa.JpaProductRepository;
 import de.aittr.g_27_shop_project.services.interfaces.ProductService;
 import de.aittr.g_27_shop_project.services.mapping.ProductMappingService;
@@ -24,10 +27,14 @@ public class JpaProductService implements ProductService {
 
   @Override
   public ProductDto save(ProductDto product) {
-    JpaProduct entity = mappingService.mapDtoToEntity(product);
-    entity.setId(0);
-    entity = repository.save(entity);
-    return mappingService.mapEntityToDto(entity);
+    try {
+      JpaProduct entity = mappingService.mapDtoToEntity(product);
+      entity.setId(0);
+      entity = repository.save(entity);
+      return mappingService.mapEntityToDto(entity);
+    } catch (Exception e) {
+      throw new FourthTestException(e.getMessage());
+    }
   }
 
   @Override
@@ -47,7 +54,7 @@ public class JpaProductService implements ProductService {
       return mappingService.mapEntityToDto(product);
     }
 
-    return null;
+    throw new ThirdTestException("Product with this ID is absent in DB");
   }
 
   @Override

@@ -7,6 +7,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import java.util.Objects;
 
 @Entity
@@ -19,9 +24,22 @@ public class JpaProduct implements Product {
   private int id;
 
   @Column(name = "name")
+  // хотим имя: только латиница, без символов и цифр, мин 4 знака, 1 заглавная
+  // Test - ok
+  // TEST - X
+  // Tes - X
+  // test - X
+  // TEst - x
+  // Test@ - X
+  @Pattern(regexp = "[A-Z][a-z]{3,}") // регьюлар экспрешн, регулярное выражение
+  // наличие паттерна делает след 2 аннотации избыточными
+  @NotNull // аннотация после Вэлид на контроллере
+  @NotBlank // тоже после Вэлид, чтобы строка не была пустой (просто "")
   private String name;
 
   @Column(name = "price")
+  @Max(90000) // тоже валидация
+  @Min(10) // тоже
   private double price;
 
   @Column(name = "is_active")
