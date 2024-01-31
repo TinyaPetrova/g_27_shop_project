@@ -18,6 +18,10 @@ import de.aittr.g_27_shop_project.services.mapping.ProductMappingService;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,6 +29,8 @@ public class JpaProductService implements ProductService {
 
   private JpaProductRepository repository;
   private ProductMappingService mappingService;
+  // private Logger logger = LogManager.getLogger(JpaProductService.class);
+  private Logger logger = LoggerFactory.getLogger(JpaProductService.class);
 
   public JpaProductService(JpaProductRepository repository, ProductMappingService mappingService) {
     this.repository = repository;
@@ -47,6 +53,7 @@ public class JpaProductService implements ProductService {
   // дз: обработчик исключений ProductGettingException
   @Override
   public List<ProductDto> getAllActiveProducts() {
+    System.out.println("Method getAllActiveProducts is launched");
     try {
       return repository.findAll()
           .stream()
@@ -61,6 +68,14 @@ public class JpaProductService implements ProductService {
   // дз: обработчик исключений ProductNotFoundException + ProductNotFoundException
   @Override
   public ProductDto getActiveProductsById(int id) {
+//    logger.log(Level.INFO, String.format("Required product with ID %d", id));
+//    logger.log(Level.WARN, String.format("Required product with ID %d", id));
+//    logger.log(Level.ERROR, String.format("Required product with ID %d", id));
+//
+//    logger.info("Required product with ID %d", id);
+//    logger.warn("Required product with ID %d", id);
+//    logger.error("Required product with ID %d", id);
+
     try {
       JpaProduct product = repository.findById(id).orElse(null);
 
@@ -116,6 +131,7 @@ public class JpaProductService implements ProductService {
       product.setActive(true);
     }
     // тут транзакция прерывается, поэтому нужна аннотация
+    System.out.println("Method restore");
   }
 
   // дз: обработчик исключений ProductCalculationException
