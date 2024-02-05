@@ -3,6 +3,7 @@ package de.aittr.g_27_shop_project.services.jpa;
 import de.aittr.g_27_shop_project.domain.dto.ProductDto;
 import de.aittr.g_27_shop_project.domain.interfaces.Product;
 import de.aittr.g_27_shop_project.domain.jpa.JpaProduct;
+import de.aittr.g_27_shop_project.domain.jpa.Task;
 import de.aittr.g_27_shop_project.exception_handling.exceptions.FourthTestException;
 import de.aittr.g_27_shop_project.exception_handling.exceptions.ProductCalculationException;
 import de.aittr.g_27_shop_project.exception_handling.exceptions.ProductDeletingException;
@@ -13,6 +14,7 @@ import de.aittr.g_27_shop_project.exception_handling.exceptions.ProductUpdatingE
 import de.aittr.g_27_shop_project.exception_handling.exceptions.SecondTestExceptions;
 import de.aittr.g_27_shop_project.exception_handling.exceptions.ThirdTestException;
 import de.aittr.g_27_shop_project.repositories.jpa.JpaProductRepository;
+import de.aittr.g_27_shop_project.scheduling.ScheduleExecutor;
 import de.aittr.g_27_shop_project.services.interfaces.ProductService;
 import de.aittr.g_27_shop_project.services.mapping.ProductMappingService;
 import jakarta.transaction.Transactional;
@@ -53,6 +55,10 @@ public class JpaProductService implements ProductService {
   // дз: обработчик исключений ProductGettingException
   @Override
   public List<ProductDto> getAllActiveProducts() {
+    // запланировали выполнение задачи, см ScheduleExecutor
+    Task task = new Task("Method getAllActiveProducts called");
+    ScheduleExecutor.scheduleTaskExecution(task);
+
     System.out.println("Method getAllActiveProducts is launched");
     try {
       return repository.findAll()
